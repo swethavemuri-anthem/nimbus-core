@@ -19,6 +19,8 @@ import { Injectable, Inject } from '@angular/core';
 import { DOCUMENT } from '@angular/platform-browser';
 import { Http, Response, Headers, RequestOptions } from '@angular/http';
 import 'rxjs/add/operator/toPromise';
+import { RedirectHandle } from '../shared/app-redirecthandle.interface';
+import { SessionStoreService } from './session.store';
 /**
  * \@author Sandeep.Mantha
  * \@whatItDoes 
@@ -32,7 +34,8 @@ export class AppInitService {
     options: RequestOptions;
     logOptions:any;
 
-    constructor(@Inject(DOCUMENT) private document: any, private http: Http) { 
+    constructor(@Inject(DOCUMENT) private document: any, private http: Http,
+                private sessionStore: SessionStoreService) { 
         this.headers = new Headers({ 'Content-Type': 'application/json'});
         this.options = new RequestOptions({ headers: this.headers, withCredentials: true });
     }
@@ -42,7 +45,8 @@ export class AppInitService {
         ServiceConstants.APP_PORT = this.document.location.port;
         // TODO APP_CONTEXT needs to be provided from content server etc which is maintained by clients. 
         // This logic will fail if context path is /path1/path2
-        ServiceConstants.APP_CONTEXT = this.document.location.pathname.split('/').splice(1, 1); 
+    //    ServiceConstants.APP_CONTEXT = this.document.location.pathname.split('/').splice(1, 1); 
+        ServiceConstants.APP_CONTEXT = 'petclinic';
         ServiceConstants.LOCALE_LANGUAGE = "en-US"; //TODO This locale should be read dynamically. Currently defaulting to en-US
         ServiceConstants.APP_PROTOCOL = this.document.location.protocol;
         /*Initially populate the APP_COMMAND_URL with a default value - 
@@ -75,6 +79,19 @@ export class AppInitService {
                     'sendWithBufferLevel': 6000
                 };
             });
+    }
+
+    setupAuthCommand() {
+        const url: string = ServiceConstants.WEB_APP_POST_LOGIN_URL;
+        if ( url ) {
+            this.http.get(url, this.options)
+            .toPromise()
+            .then(response => {
+                const redirect = new RedirectHandle().deserialize(response.json());
+                ServiceConstants.APP_COMMAND_URL = redirect.commandUrl;
+                this.sessionStore.set(ServiceConstants.AUTH_TOKEN_KEY, redirect.token);
+            });
+        }
     }
 
     getLogOptions() {

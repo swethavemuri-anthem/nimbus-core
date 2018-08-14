@@ -21,7 +21,6 @@ import { StyleGuideCmp } from './styleguide/style-guide.component';
 import { HomeLayoutCmp } from './components/home/home-layout.component';
 import { LoginLayoutCmp } from './components/login/login-layout.component';
 import { LoginCmp } from './components/login/login.component';
-import { LandingPage } from './components/login/auth-landingpage';
 import { LayoutResolver } from './components/domain/layout-resolver.service';
 import { PageResolver } from './components/platform/content/page-resolver.service';
 import { PageNotfoundComponent } from './components/platform/content/page-notfound.component';
@@ -69,7 +68,6 @@ const APPROUTES: Routes = [
                    { path: '**', component: PageNotfoundComponent }
         ]
     },
-    { path: ':auth', component: LandingPage },
     { path: '', component: PageNotfoundComponent }
 
 ];

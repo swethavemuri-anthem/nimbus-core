@@ -91,8 +91,7 @@ export class ServiceConstants {
     public static get APP_BASE_URL(): string { return this.APP_HOST_URL+this.APP_PORT+'/'+this.APP_CONTEXT; }
     public static get AUTH_TOKEN_KEY(): string { return 'AuthToken'; } // this should come from the node server
     public static get TOKEN_HEADER_KEY(): string { return 'Authorization'; } // this should come from the node server
-    public static get LANDING_ROUTE(): string { return 'authlanding' ; } // this should come from the node server and set in app.init.service
-
+    
     // public static get LOG_APPENDER_OPTIONS() : any { 
     //     var obj;
     //     obj['bufferSize'] = '20';

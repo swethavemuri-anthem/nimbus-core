@@ -130,7 +130,6 @@ import { SvgDefinitions } from './components/platform/svg/svg-definitions.compon
 
 // Declarations
 import { LoginCmp } from './components/login/login.component';
-import { LandingPage } from './components/login/auth-landingpage';
 import { KeysPipe } from './pipes/app.pipe';
 import { LinkPipe } from './pipes/link.pipe';
 import { SelectItemPipe } from './pipes/select-item.pipe';
@@ -154,6 +153,12 @@ import { MenuRouterLinkActive } from './directives/routes/route-active.component
 export function init_app(appinitservice: AppInitService) {
     return () => {
         return appinitservice.loadConfig();
+    }
+}
+
+export function setup_authCommand(appinitservice: AppInitService) {
+    return () => {
+        return appinitservice.setupAuthCommand();
     }
 }
 
@@ -195,7 +200,7 @@ export function init_app(appinitservice: AppInitService) {
         InPlaceEditorComponent, Paragraph, Value, BaseElement,
         MultiselectCard, Link, Menu, CardDetailsComponent, CardDetailsFieldGroupComponent, CardDetailsFieldComponent, CardDetailsGrid, FieldValue,
         AccordionGroup, Accordion, AccordionMain, AccordionTab, FrmGroupCmp, Button, ButtonGroup, FilterButton, OrderablePickList,
-        STOMPStatusComponent, InfiniteScrollGrid, DataTable, SubHeaderCmp, TextArea, LandingPage,
+        STOMPStatusComponent, InfiniteScrollGrid, DataTable, SubHeaderCmp, TextArea,
         LayoutService, ContentContainer,
         DomainFlowCmp, HeaderGlobal, FooterGlobal,
         BreadcrumbComponent, NavLinkRouter,
@@ -210,6 +215,7 @@ export function init_app(appinitservice: AppInitService) {
     providers: [ PageService, ConfigService, WebContentSvc, HttpClient,  HttpClientModule, AppInitService,
          CustomHttpClient, { provide: BrowserXhr, useClass: CustomBrowserXhr },
          { provide: APP_INITIALIZER, useFactory: init_app, deps: [AppInitService], multi: true },
+         { provide: APP_INITIALIZER, useFactory: setup_authCommand, deps: [AppInitService], multi: true },
          { provide: HTTP_INTERCEPTORS, useClass: CustomHttpClientInterceptor, multi: true },
          { provide: LocationStrategy, useClass: HashLocationStrategy }, GridService,
          { provide: APP_BASE_HREF, useValue: ServiceConstants.APP_CONTEXT },

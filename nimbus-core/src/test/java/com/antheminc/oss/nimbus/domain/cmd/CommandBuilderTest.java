@@ -166,5 +166,21 @@ public class CommandBuilderTest {
 		
 		System.out.println(cmd.getRefId(Type.ProcessAlias));
 	}
+	
+	@Test
+	public void t4_ampersand() {
+		String uri = "/xyz/admin/p/flow_patientenrollment/_new?fn=_initEntity&target=/para1&json=test&name&1234&target=/para2&json=test12&name&1234&target=/para3&json=testfinal";
+		Command cmd = CommandBuilder.withUri(uri).getCommand();
+		assertNotNull(cmd);
+		
+		assertEquals("/para1", cmd.getRequestParams().get("target")[0]);
+		assertEquals("/para2", cmd.getRequestParams().get("target")[1]);
+		assertEquals("/para3", cmd.getRequestParams().get("target")[2]);
+		
+		assertEquals("test&name&1234", cmd.getRequestParams().get("json")[0]);
+		assertEquals("test12&name&1234", cmd.getRequestParams().get("json")[1]);
+		assertEquals("testfinal", cmd.getRequestParams().get("json")[2]);
+
+	}
 
 }

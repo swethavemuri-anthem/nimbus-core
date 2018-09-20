@@ -76,6 +76,10 @@
         <nimbus.dsl.version>${nimbus.core.version}</nimbus.dsl.version> <!-- DSL matches core's version -->
         <nimbus.test.version>${nimbus.version}</nimbus.test.version>
         <nimbus.starter.version>${nimbus.version}</nimbus.starter.version>
+        
+        <spring-security.version>4.2.4.RELEASE</spring-security.version>
+        <jackson.version>2.9.6</jackson.version>
+        <commons-fileupload.version>1.3.3</commons-fileupload.version>
     </properties>
 
     <repositories>
@@ -345,6 +349,54 @@
 			    <scope>runtime</scope>
 			    <version>${spring.boot.version}</version>
 			</dependency> -->
+
+			<!-- BEGIN Manually managing dependencies for Security Vulnerabilities -->
+			<dependency>
+				<groupId>org.springframework.security</groupId>
+				<artifactId>spring-security-config</artifactId>
+				<version>${spring-security.version}</version><!--$NO-MVN-MAN-VER$ -->
+			</dependency>
+			<dependency>
+				<groupId>org.springframework.security</groupId>
+				<artifactId>spring-security-core</artifactId>
+				<version>${spring-security.version}</version><!--$NO-MVN-MAN-VER$ -->
+			</dependency>
+			<dependency>
+				<groupId>org.springframework.security</groupId>
+				<artifactId>spring-security-web</artifactId>
+				<version>${spring-security.version}</version>
+			</dependency>
+			<dependency>
+	        	<groupId>org.apache.commons</groupId>
+    			<artifactId>commons-fileupload</artifactId>
+    			<version>${commons-fileupload.version}</version>
+	        </dependency>
+	        <dependency>
+	            <groupId>com.fasterxml.jackson.core</groupId>
+	            <artifactId>jackson-databind</artifactId>
+	            <version>${jackson.version}</version>
+	        </dependency>
+	        <dependency>
+	            <groupId>com.fasterxml.jackson.core</groupId>
+	            <artifactId>jackson-annotations</artifactId>
+	            <version>${jackson.version}</version>
+	        </dependency>
+	       <!--  <dependency>
+		         <groupId>com.fasterxml.jackson</groupId>
+	   			 <artifactId>jackson-parent</artifactId>
+	    		 <version>${jackson.version}</version>
+	    	</dependency>-->
+			<!-- <dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-web</artifactId>
+				<version>5.0.7.RELEASE</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-webmvc</artifactId>
+				<version>5.0.7.RELEASE</version>
+			</dependency> -->
+			<!-- END Manually managing dependencies for Security Vulnerabilities -->
         </dependencies>
     </dependencyManagement>
 
@@ -478,12 +530,6 @@
 			<artifactId>spring-test</artifactId>
 			<scope>test</scope>
 		</dependency>		
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-test</artifactId>
-			<scope>test</scope>
-		</dependency>	
-		        
         <!-- Querydsl -->
         <dependency>
             <groupId>com.querydsl</groupId>
@@ -506,7 +552,11 @@
 			<groupId>org.owasp.esapi</groupId>
     		<artifactId>esapi</artifactId>
 		</dependency> -->
-		
+		<!-- <dependency>
+	        <groupId>com.fasterxml.jackson</groupId>
+	 		<artifactId>jackson-parent</artifactId>
+	  		<version>${jackson.version}</version>
+	    </dependency> -->
 	</dependencies>
 
     <distributionManagement>

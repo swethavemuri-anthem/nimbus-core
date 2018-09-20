@@ -295,7 +295,7 @@
                 <artifactId>jackson-mapper-asl</artifactId>
                 <version>${jackson-mapper-asl.version}</version>
             </dependency>
-            <dependency>
+           <!--  <dependency>
                 <groupId>org.owasp.esapi</groupId>
                 <artifactId>esapi</artifactId>
                 <version>${owasp-esapi.version}</version>
@@ -305,7 +305,7 @@
                         <artifactId>xercesImpl</artifactId>
                     </exclusion>
                 </exclusions>
-            </dependency>
+            </dependency> -->
             <dependency>
                 <groupId>com.antheminc.oss</groupId>
                 <artifactId>nimbus-core</artifactId>
@@ -496,10 +496,10 @@
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
         </dependency>
-		<dependency>
+		<!-- <dependency>
 			<groupId>org.owasp.esapi</groupId>
     		<artifactId>esapi</artifactId>
-		</dependency>
+		</dependency> -->
 		
 	</dependencies>
 

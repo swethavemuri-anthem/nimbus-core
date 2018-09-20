@@ -21,7 +21,7 @@ package com.antheminc.oss.nimbus.domain.model.config.extension;
 import java.util.ArrayList;
 import java.util.Locale;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import com.antheminc.oss.nimbus.FrameworkRuntimeException;
 import com.antheminc.oss.nimbus.InvalidConfigException;

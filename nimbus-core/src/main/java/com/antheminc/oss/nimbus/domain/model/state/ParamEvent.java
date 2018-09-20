@@ -18,7 +18,7 @@ package com.antheminc.oss.nimbus.domain.model.state;
 import java.time.Instant;
 import java.util.Arrays;
 
-import org.apache.commons.codec.binary.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.annotation.AnnotationUtils;
 
 import com.antheminc.oss.nimbus.domain.cmd.Action;

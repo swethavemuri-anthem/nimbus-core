@@ -15,10 +15,6 @@
  */
 package com.antheminc.oss.nimbus.support;
 
-import org.owasp.esapi.codecs.HTMLEntityCodec;
-
-import lombok.extern.slf4j.Slf4j;
-
 /**
  * Security Utils for logging securely. Data being logged should pass white listing before logging.
  * Encoding the log using ESAPI HTMLEntityCodec.
@@ -26,20 +22,20 @@ import lombok.extern.slf4j.Slf4j;
  * @author Swetha Vemuri
  *
  */
-@Slf4j
+//@Slf4j
 public class SecurityUtils {
 	
 	public static final String DEFAULT_SECURE = "^[a-zA-Z0-9<>()\\[\\]@/: &.=?,$#_-]{1,1000}";
 	
 	protected static String SECURE = DEFAULT_SECURE;
 	private static final char immune[] = {};
-	private static final HTMLEntityCodec encoder = new HTMLEntityCodec();
+//	private static final HTMLEntityCodec encoder = new HTMLEntityCodec();
 	
 	public SecurityUtils(String secure) {
 		SecurityUtils.SECURE = secure;
 	}
 
-	private static String scanStringForSecureLogging(String inputString, String regExp) {
+	/*private static String scanStringForSecureLogging(String inputString, String regExp) {
 		regExp = (regExp==null) ? DEFAULT_SECURE : regExp;
 		
 		if(inputString.matches(regExp)){
@@ -56,5 +52,5 @@ public class SecurityUtils {
 			log.error("Input object validation failed while scanning for security using REGEX: ["+regExp+"] ",e);
 			return encoder.encode(immune, String.valueOf(input));
 		}		
-	}
+	}*/
 }

@@ -62,7 +62,7 @@
         <exec-maven-plugin.version>1.5.0</exec-maven-plugin.version>
         <maven-enforcer-plugin.version>1.4</maven-enforcer-plugin.version>
         <node.version>v8.9.1</node.version>
-        <npm.version>5.5.1</npm.version>
+        <npm.version>6.4.1</npm.version>
         <frontend.plugin.version>1.6</frontend.plugin.version>
         <maven.karma.plugin.version>1.6</maven.karma.plugin.version>
         <owasp-esapi.version>2.1.0</owasp-esapi.version>
@@ -80,6 +80,7 @@
         <spring-security.version>4.2.4.RELEASE</spring-security.version>
         <jackson.version>2.9.6</jackson.version>
         <commons-fileupload.version>1.3.3</commons-fileupload.version>
+        <springdata.commons.version>2.0.8.RELEASE</springdata.commons.version>
     </properties>
 
     <repositories>
@@ -386,6 +387,7 @@
 	   			 <artifactId>jackson-parent</artifactId>
 	    		 <version>${jackson.version}</version>
 	    	</dependency>-->
+	    	<!-- Testcases are failing with NoClassDefFoundError for KotlinDetector with below versions -->
 			<!-- <dependency>
 				<groupId>org.springframework</groupId>
 				<artifactId>spring-web</artifactId>
@@ -548,6 +550,7 @@
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
         </dependency>
+        <!-- Manually managed third party versions without vulnerabilities -->
 		<!-- <dependency>
 			<groupId>org.owasp.esapi</groupId>
     		<artifactId>esapi</artifactId>
@@ -557,6 +560,12 @@
 	 		<artifactId>jackson-parent</artifactId>
 	  		<version>${jackson.version}</version>
 	    </dependency> -->
+	    <!-- Spring-data 2.0.8.RELEASE is inconsistent with spring-boot 1.5.2.RELEASE -->
+	    <!-- <dependency>
+            <groupId>org.springframework.data</groupId>
+            <artifactId>spring-data-commons</artifactId>
+            <version>${springdata.commons.version}</version>
+        </dependency> -->
 	</dependencies>
 
     <distributionManagement>

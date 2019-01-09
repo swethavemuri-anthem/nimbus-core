@@ -21,6 +21,7 @@ import java.util.Map;
 
 import com.antheminc.oss.nimbus.domain.cmd.Behavior;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -62,13 +63,40 @@ public class ExecuteOutput<T> implements Serializable{
 		}
 	}
 	
+	/*@Getter @Setter @SuppressWarnings("serial") @ToString(callSuper=true) @RequiredArgsConstructor @AllArgsConstructor
+	public static class GenEx<T> extends ExecuteOutput<T> {
+		
+		private Behavior b;
+		
+		private ExecuteError executeException;
+	}*/
+	
 	@Getter @Setter @SuppressWarnings("serial") @ToString(callSuper=true) 
-	public static class GenericExecute<T> extends ExecuteOutput<Map<Integer, ExecuteOutput.BehaviorExecute<CmdExecuteOutput<T>>>> {
+	public static class GenericExecute<T> extends ExecuteOutput<Map<Integer, ExecuteOutput<T>>> {
 		
 		public T extractSingleValue() {
-			return getResult().get(0).getResult().getOutputs().get(0).getValue();
+			return null;
 		}
+		
+		public boolean hasException() {
+			if(getResult().get(0).getExecuteException() != null) {
+				return true;
+			}
+			
+			return false;
+		}
+		
+		public ExecuteError extractException() {
+			return getResult().get(0).getExecuteException();
+		}
+		
 	}
+	
+	/*@Getter @Setter
+	public static class GenericException {
+		
+		private ExecuteError executeException;
+	}*/
 	
 	@Getter @Setter
 	public static class CmdExecuteOutput<T> {

@@ -46,6 +46,7 @@ import com.antheminc.oss.nimbus.domain.cmd.CommandMessage;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.MultiOutput;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.Output;
 import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecutorGateway;
+import com.antheminc.oss.nimbus.domain.cmd.exec.ExecuteError;
 import com.antheminc.oss.nimbus.domain.cmd.exec.ExecuteOutput;
 import com.antheminc.oss.nimbus.domain.cmd.exec.ExecuteOutput.BehaviorExecute;
 import com.antheminc.oss.nimbus.domain.cmd.exec.ExecuteOutput.CmdExecuteOutput;
@@ -328,6 +329,50 @@ public class ModelRepositoryTest extends AbstractFrameworkIntegrationTests {
 		assertNotNull(sample_remote.get(0).getAttr2());
 		assertEquals(2, sample_remote.get(0).getAttr2().size());
 		assertEquals("nested1", sample_remote.get(0).getAttr2().get(0).getNested_attr());
+	}
+	
+	@Test
+	public void t9_test_remote_exception() {
+		final String requestUri = "piedpiper/encryption_3.9/p/remote_repo/_search";
+		Command cmd = CommandUtils.prepareCommand(requestUri);
+		Map<String, String[]> requestParams = new HashMap<>();
+		requestParams.put("fn", new String[]{"query"});
+		requestParams.put("where", new String[]{"remote_repo.attr1.eq('example1')"});
+		requestParams.put("fetch", new String[]{"1"});
+		cmd.setRequestParams(requestParams);
+		CommandMessage cmdMsg = new CommandMessage();
+		cmdMsg.setCommand(cmd);
+		
+		CmdExecuteOutput<SampleRemoteRepo> cmdExecOutput = new CmdExecuteOutput<>();		
+		Map<Integer,ExecuteOutput.BehaviorExecute<CmdExecuteOutput<SampleRemoteRepo>>> outputMap = new HashMap<>();		
+		ExecuteOutput.BehaviorExecute<CmdExecuteOutput<SampleRemoteRepo>> execOutput = new BehaviorExecute<CmdExecuteOutput<SampleRemoteRepo>>(Behavior.$execute,new CmdExecuteOutput<SampleRemoteRepo>());
+		GenericExecute<SampleRemoteRepo> responseValue = new GenericExecute<SampleRemoteRepo>();
+		
+		ExecuteError execErr = new ExecuteError();
+		execErr.setCode("com.querydsl.core.NonUniqueResultException.message");
+		execErr.setMessage("System Error {20190108-102427.921-0.4462805406358826}");
+		execErr.setUniqueId("{20190108-102427.921-0.4462805406358826}");
+		execOutput.setExecuteException(execErr);
+		outputMap.put(0, execOutput);		
+		responseValue.setResult(outputMap);
+		
+		ObjectMapper om = new ObjectMapper();
+		String jsonresp = null;
+		try {
+			jsonresp = om.writeValueAsString(responseValue);
+			} catch (JsonProcessingException e) {
+			e.printStackTrace();
+		}
+		
+		this.mockServer.expect(requestTo(new StringContains(requestUri)))
+		.andExpect(method(HttpMethod.POST))
+		.andExpect(queryParam("fn","query"))
+		.andExpect(queryParam("where","remote_repo.attr1.eq('example1')"))
+		.andExpect(queryParam("fetch","1"))
+		.andRespond(withSuccess(jsonresp, MediaType.APPLICATION_JSON));
+		
+		MultiOutput multiOp = this.commandGateway.execute(cmdMsg);
+		
 	}
 	
 	private String mockSingleGenericExecuteResponse() {

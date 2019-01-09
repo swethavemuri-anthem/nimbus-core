@@ -27,8 +27,10 @@ import com.antheminc.oss.nimbus.domain.cmd.exec.CommandExecution.Output;
 import com.antheminc.oss.nimbus.domain.model.state.AbstractStateEventHandlerTests;
 import com.antheminc.oss.nimbus.domain.model.state.EntityState.Param;
 import com.antheminc.oss.nimbus.domain.model.state.ModelEvent;
+import com.antheminc.oss.nimbus.domain.model.state.QuadModel;
 import com.antheminc.oss.nimbus.domain.model.state.internal.DefaultParamState.LeafState;
 import com.antheminc.oss.nimbus.domain.model.state.internal.MappedDefaultParamState.MappedLeafState;
+import com.antheminc.oss.nimbus.entity.AbstractEntity.IdLong;
 import com.antheminc.oss.nimbus.support.Holder;
 import com.antheminc.oss.nimbus.test.domain.support.utils.MockHttpRequestBuilder;
 
@@ -39,6 +41,10 @@ import com.antheminc.oss.nimbus.test.domain.support.utils.MockHttpRequestBuilder
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class MessageConditionalEventHandlerTest extends AbstractStateEventHandlerTests {
 
+	protected Command _cmd2;
+	
+	protected QuadModel<?, ? extends IdLong> _q2;
+	
 	@Override
 	protected Command createCommand() {
 
@@ -64,6 +70,23 @@ public class MessageConditionalEventHandlerTest extends AbstractStateEventHandle
 		assertEquals(1, inputParam.getMessages().size());
 		assertEquals("This is a Test Warning Message", inputParam.getMessages().iterator().next().getText());
 		assertTrue(inputParam.hasContextStateChanged());
+		
+		assertNotNull(_q.getCore().findParamByPath("/id").getState());
+		inputParam.setState(102);
+	//	assertNull(inputParam.getMessages());
+		
+		_cmd2 = CommandBuilder.withUri("/hooli/thebox/p/sample_view:"+_q.getCore().findParamByPath("/id").getState()+"/_get").getCommand();
+		//_q = quadModelBuilder.build(_cmd);
+		_q2 = (QuadModel<?, ? extends IdLong>)executionContextLoader.load(_cmd2).getQuadModel();
+		assertNotNull(_q2);
+		
+		_q2.getRoot().getExecutionRuntime().onStartCommandExecution(_cmd2);
+		String parampath = "/sample_view:"+_q.getCore().findParamByPath("/id").getState()+"/page_aqua/vtAqua/vsSampleForm/vfSampleForm/testWarningTextBox";
+		Param<Integer> inputParam2 = _q2.getRoot().findParamByPath(parampath);
+		assertNotNull(inputParam2);
+		assertNotNull(inputParam2.getLeafState());
+		Assert.assertNull(inputParam.getMessages());
+		
 	}
 	
 	@Test

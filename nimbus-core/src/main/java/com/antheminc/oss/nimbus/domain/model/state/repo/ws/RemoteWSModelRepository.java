@@ -21,17 +21,17 @@ import java.lang.reflect.Type;
 import java.net.URI;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Supplier;
 
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.RequestEntity;
+import org.springframework.http.ResponseEntity;
 
 import com.antheminc.oss.nimbus.context.BeanResolverStrategy;
 import com.antheminc.oss.nimbus.domain.cmd.Behavior;
@@ -40,9 +40,7 @@ import com.antheminc.oss.nimbus.domain.cmd.exec.ExecuteOutput.GenericListExecute
 import com.antheminc.oss.nimbus.domain.defn.Constants;
 import com.antheminc.oss.nimbus.domain.model.state.repo.AbstractWSModelRepository;
 import com.antheminc.oss.nimbus.domain.model.state.repo.ExternalModelRepository;
-import com.antheminc.oss.nimbus.domain.model.state.repo.db.DBSearch;
 import com.antheminc.oss.nimbus.domain.model.state.repo.db.SearchCriteria;
-import com.antheminc.oss.nimbus.domain.model.state.repo.db.SearchCriteria.ExampleSearchCriteria;
 import com.antheminc.oss.nimbus.support.EnableLoggingInterceptor;
 
 import lombok.Getter;
@@ -56,12 +54,6 @@ import lombok.Setter;
 @Getter @Setter
 @EnableLoggingInterceptor
 public class RemoteWSModelRepository extends AbstractWSModelRepository implements ExternalModelRepository {
-	
-	@Autowired @Qualifier("searchByExample") 
-	private DBSearch searchByExample;
-	
-	@Autowired @Qualifier("searchByQuery") 
-	private DBSearch searchByQuery;
 	
 	private Map<String, String> serviceUrl;
 	
@@ -84,13 +76,17 @@ public class RemoteWSModelRepository extends AbstractWSModelRepository implement
 	@SuppressWarnings("unchecked")
 	@Override
 	public <ID extends Serializable, T> T handleGet(ID id, Class<T> referredClass, URI uri) {
-		
-		Object response;
+		ResponseEntity<T> responseEntity = getRestTemplate().exchange(new RequestEntity<T>(HttpMethod.GET, uri), referredClass);
+		return Optional.ofNullable(responseEntity).map((response) -> response.getBody()).orElse(null);
+		/*Object response;
 		response = execute(() -> new RequestEntity<GenericExecute<T>>(HttpMethod.GET, uri), 
 				() -> createGenericRespEntity(referredClass));
 		
 		GenericExecute<T> output = (GenericExecute<T>) response;
-		return output.extractSingleValue();
+		if(output.hasException()) {
+			return (T) output.extractException();
+		}
+		return output.extractSingleValue();*/
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -98,12 +94,8 @@ public class RemoteWSModelRepository extends AbstractWSModelRepository implement
 	public <T> Object handleSearch(Class<T> referredDomainClass, Supplier<SearchCriteria<?>> criteriaSupplier,String alias, URI uri) {
 		SearchCriteria<?> searchCriteria = criteriaSupplier.get();
 		
-		Object criteria;
-		if (searchCriteria instanceof ExampleSearchCriteria) {
-			criteria = searchCriteria.getWhere() != null ? (String) searchCriteria.getWhere() : "{}";
-		} else {
-			criteria = getSearchByQuery().search(referredDomainClass, alias, searchCriteria);
-		}
+		Object criteria = searchCriteria.getWhere() != null ? (String) searchCriteria.getWhere() : "{}";
+		
 				
 		RequestEntity<Object> request = (RequestEntity<Object>) RequestEntity
 			     .post(uri)
@@ -121,7 +113,12 @@ public class RemoteWSModelRepository extends AbstractWSModelRepository implement
 					() -> createGenericRespEntity(referredDomainClass));
 			
 			GenericExecute<T> output = (GenericExecute<T>) response;
-			return output.extractSingleValue();			
+//			if(output.hasException()) {
+//				return output.extractException();
+//			}
+			
+			return output.extractSingleValue();
+						
 		}		
 	}
 	
